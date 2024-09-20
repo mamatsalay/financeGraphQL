@@ -1,0 +1,55 @@
+type UserInfo {
+    id: ID!
+    username: String!
+    password: String!
+    email: String!
+    incomes: [Income]
+    expenses: [Expense]
+}
+
+type Income {
+    id: ID!
+    amount: Float!
+    description: String!
+    date: String!  # Assuming ISO Date String
+    userInfo: UserInfo
+    customLabels: [CustomLabel]  # Many-to-many relationship
+}
+
+type Expense {
+    id: ID!
+    amount: Float!
+    description: String!
+    date: String!  # Assuming ISO Date String
+    userInfo: UserInfo
+    customLabels: [CustomLabel]  # Many-to-many relationship
+}
+
+type CustomLabel {
+    id: ID!
+    name: String!
+    color: String!
+    incomes: [Income]  # Many-to-many relationship
+    expenses: [Expense]  # Many-to-many relationship
+}
+
+# Queries and Mutations
+
+type Query {
+    getUserInfo(id: ID!): UserInfo
+    getAllIncomes(StartDate: String!, EndDate: String!, customLabelNames: [String!]): [Income]
+    getAllExpenses(StartDate: String!, EndDate: String!, customLabelNames: [String!]): [Expense]
+    allCustomLabels: [CustomLabel]
+}
+
+type Mutation {
+    addIncome(amount: Float!, description: String!, date: String!, customLabelNames: [String!]): Income
+    addExpense(amount: Float!, description: String!, date: String!, customLabelNames: [String!]): Expense
+    deleteIncome(id: ID!): String
+    deleteExpense(id: ID!): String
+    updateIncome(id: ID!, amount: Float!, description: String!, date: String!): Income
+    updateExpense(id: ID!, amount: Float!, description: String!, date: String!): Expense
+    createCustomLabel(name: String!, color: String!): CustomLabel
+    updateCustomLabel(id: ID!, name: String!, color: String!): CustomLabel
+    deleteCustomLabel(id: ID!): String
+}
