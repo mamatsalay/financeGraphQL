@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import uz.uzum.finance.model.CustomLabel;
 import uz.uzum.finance.model.Income;
-import uz.uzum.finance.model.Income;
 import uz.uzum.finance.repository.CustomLabelRepository;
 import uz.uzum.finance.repository.IncomeRepository;
 
@@ -25,10 +24,17 @@ public class IncomeService {
     private final IncomeRepository incomeRepository;
     private final CustomLabelRepository customLabelRepository;
 
-    public List<Income> getAllIncomes(String startDate, String endDate, List<String> customLabelNames) {
-        return incomeRepository.findByDateBetweenAndLabels(startDate, endDate, customLabelNames);
+    @Transactional(readOnly = true)
+    public List<Income> getAllIncomes(LocalDate startDate, LocalDate endDate, List<String> customLabelNames) {
+        if (customLabelNames != null && !customLabelNames.isEmpty()) {
+            Long labelCount = (long) customLabelNames.size();
+            return incomeRepository.findByDateBetweenAndExactLabels(startDate, endDate, customLabelNames, labelCount);
+        } else {
+            return incomeRepository.findByDateBetween(startDate, endDate);
+        }
     }
 
+    @Transactional
     public Income addIncome(BigDecimal amount, String description, LocalDate date, List<String> customLabelNames) {
         Income income = new Income();
         income.setAmount(amount);
@@ -39,9 +45,10 @@ public class IncomeService {
     }
 
     @Transactional
-    public void deleteIncome(Long id) {
-        Income income = incomeRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Income not found"));
+    public String deleteIncome(Long id) {
+        Income income = incomeRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Income with ID " + id + " not found"));
         incomeRepository.delete(income);
+        return "Income with ID " + id + " deleted";
     }
 
     @Transactional

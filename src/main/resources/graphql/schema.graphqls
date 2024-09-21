@@ -39,7 +39,7 @@ type Query {
     getUserInfo(id: ID!): UserInfo
     getAllIncomes(StartDate: String!, EndDate: String!, customLabelNames: [String!]): [Income]
     getAllExpenses(StartDate: String!, EndDate: String!, customLabelNames: [String!]): [Expense]
-    allCustomLabels: [CustomLabel]
+    getAllCustomLabels: [CustomLabel]
 }
 
 type Mutation {
@@ -47,8 +47,8 @@ type Mutation {
     addExpense(amount: Float!, description: String!, date: String!, customLabelNames: [String!]): Expense
     deleteIncome(id: ID!): String
     deleteExpense(id: ID!): String
-    updateIncome(id: ID!, amount: Float!, description: String!, date: String!): Income
-    updateExpense(id: ID!, amount: Float!, description: String!, date: String!): Expense
+    updateIncome(id: ID!, amount: Float!, description: String!, date: String!, customLabelNames: [String!]): Income
+    updateExpense(id: ID!, amount: Float!, description: String!, date: String!, customLabelNames: [String!]): Expense
     createCustomLabel(name: String!, color: String!): CustomLabel
     updateCustomLabel(id: ID!, name: String!, color: String!): CustomLabel
     deleteCustomLabel(id: ID!): String

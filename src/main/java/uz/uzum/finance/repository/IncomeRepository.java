@@ -7,17 +7,20 @@ import uz.uzum.finance.model.Income;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 public interface IncomeRepository extends JpaRepository<Income, Long> {
 
-    Optional<Income> findIncomeById(Long id);
-
-    @Query("SELECT i FROM Income i JOIN i.customLabels cl " +
+    @Query("SELECT i FROM Income i " +
             "WHERE i.date BETWEEN :startDate AND :endDate " +
-            "AND (:customLabelNames IS NULL OR cl.name IN :customLabelNames)")
-    List<Income> findByDateBetweenAndLabels(@Param("startDate") String startDate,
-                                            @Param("endDate") String endDate,
-                                            @Param("customLabelNames") List<String> customLabelNames);
+            "AND SIZE(i.customLabels) = :labelCount " +
+            "AND NOT EXISTS (" +
+            "  SELECT cl FROM i.customLabels cl WHERE cl.name NOT IN :customLabelNames" +
+            ")")
+    List<Income> findByDateBetweenAndExactLabels(@Param("startDate") LocalDate startDate,
+                                            @Param("endDate") LocalDate endDate,
+                                            @Param("customLabelNames") List<String> customLabelNames,
+                                            @Param("labelCount") Long labelCount);
+
+    List<Income> findByDateBetween(LocalDate startDate, LocalDate endDate);
 
 }

@@ -28,8 +28,13 @@ public class ExpenseService {
     }
 
     @Transactional(readOnly = true)
-    public List<Expense> getAllExpenses(String startDate, String endDate, List<String> customLabelNames) {
-        return expenseRepository.findByDateBetweenAndLabels(startDate, endDate, customLabelNames);
+    public List<Expense> getAllExpenses(LocalDate startDate, LocalDate endDate, List<String> customLabelNames) {
+        if (customLabelNames != null && !customLabelNames.isEmpty()) {
+            Long labelCount = (long) customLabelNames.size();
+            return expenseRepository.findByDateBetweenAndExactLabels(startDate, endDate, customLabelNames, labelCount);
+        } else {
+            return expenseRepository.findByDateBetween(startDate, endDate);
+        }
     }
 
     @Transactional
@@ -43,9 +48,10 @@ public class ExpenseService {
     }
 
     @Transactional
-    public void deleteExpense(Long id) {
+    public String deleteExpense(Long id) {
         Expense expense = expenseRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Expense not found"));
         expenseRepository.delete(expense);
+        return "Expense with id " + id + " was deleted";
     }
 
     @Transactional
