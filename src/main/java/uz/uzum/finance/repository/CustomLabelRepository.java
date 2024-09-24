@@ -6,6 +6,6 @@ import uz.uzum.finance.model.CustomLabel;
 import java.util.Optional;
 
 public interface CustomLabelRepository extends JpaRepository<CustomLabel, Long> {
-
+    // TODO optional
     CustomLabel findByName(String name);
 }

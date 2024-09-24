@@ -20,15 +20,17 @@ public class ExpenseService {
 
     private final ExpenseRepository expenseRepository;
     private final CustomLabelRepository customLabelRepository;
-
+    // TODO: сколько запросов к БД будет выполнено в худшем случае?
+    // как можно уменьшить количество запросов к БД?
     private Set<CustomLabel> fetchCustomLabelsByNames(List<String> customLabelNames) {
         return customLabelNames.stream()
                 .map(customLabelRepository::findByName)
                 .collect(Collectors.toSet());
     }
-
+    // TODO следовать семантике названия метода find и get
     @Transactional(readOnly = true)
-    public List<Expense> getAllExpenses(LocalDate startDate, LocalDate endDate, List<String> customLabelNames) {
+    public List<Expense> getAllExpenses(LocalDate startDate, LocalDate endDate,
+                                        List<String> customLabelNames) {
         if (customLabelNames != null && !customLabelNames.isEmpty()) {
             Long labelCount = (long) customLabelNames.size();
             return expenseRepository.findByDateBetweenAndExactLabels(startDate, endDate, customLabelNames, labelCount);

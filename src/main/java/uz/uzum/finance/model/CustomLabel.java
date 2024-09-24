@@ -33,7 +33,7 @@ public class CustomLabel {
     @ManyToMany(mappedBy = "customLabels")
     private Set<Expense> expenses;
 
-
+    // TODO хорошо что вы реализовали, но можно использовать equals и hashCode из Lombok
     @Override
     public final boolean equals(Object o) {
         if (this == o) return true;

@@ -9,7 +9,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface ExpenseRepository extends JpaRepository<Expense, Long> {
-
+    // TODO Query
     @Query("SELECT e FROM Expense e " +
             "WHERE e.date BETWEEN :startDate AND :endDate " +
             "AND SIZE(e.customLabels) = :labelCount " +

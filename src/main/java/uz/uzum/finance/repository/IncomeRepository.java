@@ -9,7 +9,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface IncomeRepository extends JpaRepository<Income, Long> {
-
+    // TODO incorrect query
     @Query("SELECT i FROM Income i " +
             "WHERE i.date BETWEEN :startDate AND :endDate " +
             "AND SIZE(i.customLabels) = :labelCount " +
