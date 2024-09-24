@@ -22,11 +22,15 @@ import java.util.stream.Collectors;
 public class IncomeService {
 
     private final IncomeRepository incomeRepository;
+    // TODO custom label можеть лежать в кэше, чтобы не делать запросы к БД
     private final CustomLabelRepository customLabelRepository;
 
     @Transactional(readOnly = true)
-    public List<Income> getAllIncomes(LocalDate startDate, LocalDate endDate, List<String> customLabelNames) {
+    public List<Income> getAllIncomes(LocalDate startDate,
+                                      LocalDate endDate,
+                                      List<String> customLabelNames) {
         if (customLabelNames != null && !customLabelNames.isEmpty()) {
+            // TODO в написании кода стремиться к тому что мы не кастим и делать это в том случае когда это необходимо
             Long labelCount = (long) customLabelNames.size();
             return incomeRepository.findByDateBetweenAndExactLabels(startDate, endDate, customLabelNames, labelCount);
         } else {
@@ -46,7 +50,8 @@ public class IncomeService {
 
     @Transactional
     public String deleteIncome(Long id) {
-        Income income = incomeRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Income with ID " + id + " not found"));
+        Income income = incomeRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("Income with ID " + id + " not found"));
         incomeRepository.delete(income);
         return "Income with ID " + id + " deleted";
     }
@@ -68,6 +73,7 @@ public class IncomeService {
         return incomeRepository.save(income);
     }
 
+    // TODO: сколько запросов к БД будет выполнено в худшем случае?
     private Set<CustomLabel> fetchCustomLabelsByNames(List<String> customLabelNames) {
         return customLabelNames.stream()
                 .map(customLabelRepository::findByName)
