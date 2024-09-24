@@ -10,9 +10,8 @@ import uz.uzum.finance.repository.CustomLabelRepository;
 import uz.uzum.finance.repository.ExpenseRepository;
 import uz.uzum.finance.repository.IncomeRepository;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -69,7 +68,33 @@ public class CustomLabelService {
     }
 
     public CustomLabel getCustomLabelByName(String name){
-        return customLabelRepository.findByName(name);
+        return customLabelRepository.findByName(name).orElseThrow(() -> new IllegalArgumentException("Label with name " + name + " not found"));
+    }
+
+    public Set<CustomLabel> fetchCustomLabelsByNames(List<String> customLabelNames) {
+        if (customLabelNames == null || customLabelNames.isEmpty()) {
+            return Collections.emptySet();
+        }
+
+        // Fetch all custom labels in a single query
+        List<CustomLabel> labels = customLabelRepository.findAllByNameIn(customLabelNames);
+
+        // Check for missing labels
+        Set<String> foundNames = labels.stream()
+                .map(CustomLabel::getName)
+                .collect(Collectors.toSet());
+
+        List<String> missingLabels = customLabelNames.stream()
+                .filter(name -> !foundNames.contains(name))
+                .toList();
+
+        if (!missingLabels.isEmpty()) {
+            // Option 1: Throw an exception
+            throw new IllegalArgumentException("Custom labels not found: " + missingLabels);
+
+        }
+
+        return new LinkedHashSet<>(labels);
     }
 
 }

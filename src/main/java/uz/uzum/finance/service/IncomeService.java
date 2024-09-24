@@ -5,16 +5,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import org.springframework.transaction.annotation.Transactional;
-import uz.uzum.finance.model.CustomLabel;
 import uz.uzum.finance.model.Income;
-import uz.uzum.finance.repository.CustomLabelRepository;
 import uz.uzum.finance.repository.IncomeRepository;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 
 @Service
@@ -22,7 +18,17 @@ import java.util.stream.Collectors;
 public class IncomeService {
 
     private final IncomeRepository incomeRepository;
-    private final CustomLabelRepository customLabelRepository;
+    private final CustomLabelService customLabelService;
+
+    @Transactional
+    public Income addIncome(BigDecimal amount, String description, LocalDate date, List<String> customLabelNames) {
+        Income income = new Income();
+        income.setAmount(amount);
+        income.setDescription(description);
+        income.setDate(date);
+        income.setCustomLabels(customLabelService.fetchCustomLabelsByNames(customLabelNames));
+        return incomeRepository.save(income);
+    }
 
     @Transactional(readOnly = true)
     public List<Income> getAllIncomes(LocalDate startDate, LocalDate endDate, List<String> customLabelNames) {
@@ -32,16 +38,6 @@ public class IncomeService {
         } else {
             return incomeRepository.findByDateBetween(startDate, endDate);
         }
-    }
-
-    @Transactional
-    public Income addIncome(BigDecimal amount, String description, LocalDate date, List<String> customLabelNames) {
-        Income income = new Income();
-        income.setAmount(amount);
-        income.setDescription(description);
-        income.setDate(date);
-        income.setCustomLabels(fetchCustomLabelsByNames(customLabelNames));
-        return incomeRepository.save(income);
     }
 
     @Transactional
@@ -56,22 +52,12 @@ public class IncomeService {
         Income income = incomeRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Income with ID " + id + " not found"));
 
-        // Update basic fields
         income.setAmount(amount);
         income.setDescription(description);
         income.setDate(date);
-
-        // Fetch and update labels
-        Set<CustomLabel> customLabels = fetchCustomLabelsByNames(customLabelNames);
-        income.setCustomLabels(customLabels);
+        income.setCustomLabels(customLabelService.fetchCustomLabelsByNames(customLabelNames));
 
         return incomeRepository.save(income);
-    }
-
-    private Set<CustomLabel> fetchCustomLabelsByNames(List<String> customLabelNames) {
-        return customLabelNames.stream()
-                .map(customLabelRepository::findByName)
-                .collect(Collectors.toSet());
     }
 
 }

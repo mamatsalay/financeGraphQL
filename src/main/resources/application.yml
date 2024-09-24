@@ -1,6 +1,11 @@
 server:
   port: 8080
 spring:
+  cache:
+    type: redis
+    redis:
+      cache-null-values: true
+      time-to-live: 60000
   application:
     name: finance
   graphql:
