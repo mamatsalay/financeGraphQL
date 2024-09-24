@@ -29,8 +29,6 @@ type CustomLabel {
     id: ID!
     name: String!
     color: String!
-    incomes: [Income]  # Many-to-many relationship
-    expenses: [Expense]  # Many-to-many relationship
 }
 
 # Queries and Mutations
@@ -39,6 +37,7 @@ type Query {
     getUserInfo(id: ID!): UserInfo
     getAllIncomes(StartDate: String!, EndDate: String!, customLabelNames: [String!]): [Income]
     getAllExpenses(StartDate: String!, EndDate: String!, customLabelNames: [String!]): [Expense]
+    getCustomLabelsByName(name: String!): CustomLabel
     getAllCustomLabels: [CustomLabel]
 }
 

@@ -17,9 +17,9 @@ public interface ExpenseRepository extends JpaRepository<Expense, Long> {
             "  SELECT cl FROM e.customLabels cl WHERE cl.name NOT IN :customLabelNames" +
             ")")
     List<Expense> findByDateBetweenAndExactLabels(@Param("startDate") LocalDate startDate,
-                                             @Param("endDate") LocalDate endDate,
-                                             @Param("customLabelNames") List<String> customLabelNames,
-                                             @Param("labelCount") Long labelCount);
+                                                  @Param("endDate") LocalDate endDate,
+                                                  @Param("customLabelNames") List<String> customLabelNames,
+                                                  @Param("labelCount") Long labelCount);
 
     List<Expense> findByDateBetween(LocalDate startDate, LocalDate endDate);
 

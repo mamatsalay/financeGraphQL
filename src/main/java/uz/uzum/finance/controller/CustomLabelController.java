@@ -31,7 +31,7 @@ public class CustomLabelController {
     }
 
     @MutationMapping
-    public Void deleteCustomLabel(@Argument Long id) {
+    public String deleteCustomLabel(@Argument Long id) {
         return customLabelService.deleteCustomLabel(id);
     }
 
