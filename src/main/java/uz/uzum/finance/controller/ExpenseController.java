@@ -20,12 +20,12 @@ public class ExpenseController {
     private final ExpenseService expenseService;
 
     @MutationMapping
-    public Expense addExpense(@Argument BigDecimal amount,
-                              @Argument String description,
-                              @Argument LocalDate date,
-                              @Argument List<String> customLabelNames) {
+    public Expense createExpense(@Argument BigDecimal amount,
+                                 @Argument String description,
+                                 @Argument LocalDate date,
+                                 @Argument List<String> customLabelNames) {
 
-        return expenseService.addExpense(amount, description, date, customLabelNames);
+        return expenseService.createExpense(amount, description, date, customLabelNames);
 
     }
 

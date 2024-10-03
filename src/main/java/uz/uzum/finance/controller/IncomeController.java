@@ -20,12 +20,12 @@ public class IncomeController {
     private final IncomeService incomeService;
 
     @MutationMapping
-    public Income addIncome(@Argument BigDecimal amount,
+    public Income createIncome(@Argument BigDecimal amount,
                               @Argument String description,
                               @Argument LocalDate date,
                               @Argument List<String> customLabelNames) {
 
-        return incomeService.addIncome(amount, description, date, customLabelNames);
+        return incomeService.createIncome(amount, description, date, customLabelNames);
 
     }
 

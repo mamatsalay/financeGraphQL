@@ -36,6 +36,11 @@ public class CustomLabelController {
     }
 
     @QueryMapping
+    public CustomLabel getCustomLabelByName(@Argument String name) {
+        return customLabelService.getCustomLabelByName(name);
+    }
+
+    @QueryMapping
     public List<CustomLabel> getAllCustomLabels() {
         return customLabelService.getAllCustomLabels();
     }

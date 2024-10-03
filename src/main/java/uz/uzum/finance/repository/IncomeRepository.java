@@ -10,16 +10,12 @@ import java.util.List;
 
 public interface IncomeRepository extends JpaRepository<Income, Long> {
 
-    @Query("SELECT i FROM Income i " +
+    @Query("SELECT i FROM Income i LEFT JOIN i.customLabels cl " +
             "WHERE i.date BETWEEN :startDate AND :endDate " +
-            "AND SIZE(i.customLabels) = :labelCount " +
-            "AND NOT EXISTS (" +
-            "  SELECT cl FROM i.customLabels cl WHERE cl.name NOT IN :customLabelNames" +
-            ")")
-    List<Income> findByDateBetweenAndExactLabels(@Param("startDate") LocalDate startDate,
+            "AND (:customLabelNames IS NULL OR cl.name IN :customLabelNames)")
+    List<Income> findByDateBetweenAndLabels(@Param("startDate") LocalDate startDate,
                                             @Param("endDate") LocalDate endDate,
-                                            @Param("customLabelNames") List<String> customLabelNames,
-                                            @Param("labelCount") Long labelCount);
+                                            @Param("customLabelNames") List<String> customLabelNames);
 
     List<Income> findByDateBetween(LocalDate startDate, LocalDate endDate);
 

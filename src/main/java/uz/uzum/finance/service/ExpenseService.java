@@ -1,6 +1,8 @@
 package uz.uzum.finance.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import uz.uzum.finance.model.Expense;
@@ -17,18 +19,18 @@ public class ExpenseService {
     private final ExpenseRepository expenseRepository;
     private final CustomLabelService customLabelService;
 
+
     @Transactional(readOnly = true)
     public List<Expense> getAllExpenses(LocalDate startDate, LocalDate endDate, List<String> customLabelNames) {
         if (customLabelNames != null && !customLabelNames.isEmpty()) {
-            Long labelCount = (long) customLabelNames.size();
-            return expenseRepository.findByDateBetweenAndExactLabels(startDate, endDate, customLabelNames, labelCount);
+            return expenseRepository.findByDateBetweenAndLabels(startDate, endDate, customLabelNames);
         } else {
             return expenseRepository.findByDateBetween(startDate, endDate);
         }
     }
 
     @Transactional
-    public Expense addExpense(BigDecimal amount, String description, LocalDate date, List<String> customLabelNames) {
+    public Expense createExpense(BigDecimal amount, String description, LocalDate date, List<String> customLabelNames) {
         Expense expense = new Expense();
         expense.setAmount(amount);
         expense.setDescription(description);

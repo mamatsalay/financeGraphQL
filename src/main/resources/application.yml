@@ -1,11 +1,6 @@
 server:
   port: 8080
 spring:
-  cache:
-    type: redis
-    redis:
-      cache-null-values: true
-      time-to-live: 60000
   application:
     name: finance
   graphql:
@@ -14,10 +9,11 @@ spring:
     schema:
       locations: classpath:graphql/**/
   datasource:
-    url: jdbc:h2:mem:testdb
-    driver-class-name: org.h2.Driver
-    username: sa
-    password: password
+    url: jdbc:postgresql://localhost:5432/postgres
+    driver-class-name: org.postgresql.Driver
+    username: postgres
+    password: postgres
   jpa:
-    database-platform: org.hibernate.dialect.H2Dialect
     show-sql: true
+    hibernate:
+      ddl-auto: create-drop

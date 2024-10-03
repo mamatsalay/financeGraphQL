@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import org.springframework.transaction.annotation.Transactional;
 import uz.uzum.finance.model.Income;
+import uz.uzum.finance.model.UserInfo;
 import uz.uzum.finance.repository.IncomeRepository;
 
 import java.math.BigDecimal;
@@ -21,7 +22,7 @@ public class IncomeService {
     private final CustomLabelService customLabelService;
 
     @Transactional
-    public Income addIncome(BigDecimal amount, String description, LocalDate date, List<String> customLabelNames) {
+    public Income createIncome(BigDecimal amount, String description, LocalDate date, List<String> customLabelNames) {
         Income income = new Income();
         income.setAmount(amount);
         income.setDescription(description);
@@ -33,8 +34,7 @@ public class IncomeService {
     @Transactional(readOnly = true)
     public List<Income> getAllIncomes(LocalDate startDate, LocalDate endDate, List<String> customLabelNames) {
         if (customLabelNames != null && !customLabelNames.isEmpty()) {
-            Long labelCount = (long) customLabelNames.size();
-            return incomeRepository.findByDateBetweenAndExactLabels(startDate, endDate, customLabelNames, labelCount);
+            return incomeRepository.findByDateBetweenAndLabels(startDate, endDate, customLabelNames);
         } else {
             return incomeRepository.findByDateBetween(startDate, endDate);
         }
