@@ -1,0 +1,33 @@
+jwt:
+  secret: babadjanovmamatsalay0011992288337744
+  expiration: 3600
+
+server:
+  port: 8080
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    password: postgres
+    username: postgres
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+  application:
+    name: gateway-service
+  cloud:
+    gateway:
+      routes:
+        - id: graphql-service
+          uri: http://localhost:8081
+          predicates:
+            - Path=/graphiql/**
+            - Path=/graphql/**
+          filters:
+            - AddRequestHeader=Authorization, Bearer {token}
+        - id: register-service
+          uri: http://localhost:8082
+          predicates:
+            - Path=/v1/api/**

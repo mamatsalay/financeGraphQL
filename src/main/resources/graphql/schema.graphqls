@@ -3,8 +3,6 @@ type UserInfo {
     username: String!
     password: String!
     email: String!
-    incomes: [Income]
-    expenses: [Expense]
 }
 
 type Income {
@@ -31,10 +29,7 @@ type CustomLabel {
     color: String!
 }
 
-# Queries and Mutations
-
 type Query {
-    getUserInfo: UserInfo
     getAllIncomes(StartDate: String!, EndDate: String!, customLabelNames: [String!]): [Income]
     getAllExpenses(StartDate: String!, EndDate: String!, customLabelNames: [String!]): [Expense]
     getCustomLabelByName(name: String!): CustomLabel
